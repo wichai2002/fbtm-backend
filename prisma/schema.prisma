@@ -1,0 +1,106 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+
+model User {
+  id Int @default(autoincrement()) @id
+  name String
+  username String
+  passwored String
+  mobile String
+  email String
+  is_active Boolean @default(true)
+  extra_info Json?
+  role Role @default(Admin)
+  created_at DateTime @default(now())
+  updated_at DateTime @updatedAt
+  last_login DateTime?
+  appointment Appointment[]
+}
+
+
+model Player {
+  id Int @default(autoincrement()) @id
+  name String?
+  nick_name String
+  year Int @default(1)
+  major Marjor @default(IT)
+  remark String?
+  status Status @default(Playing)
+  positions String[]
+  level Int @default(1)
+  last_join DateTime?
+  appointments Appointment[] @relation("AppointmentJoin")
+  
+}
+
+model Appointment {
+  id Int @default(autoincrement()) @id
+  title String
+  date DateTime
+  start_time String
+  end_time String
+  type AppointmentType
+  location String
+  map_uri Status?
+  admin_id Int
+  admin  User  @relation(fields: [admin_id], references: [id])
+  remark Status?
+  players Player[] @relation("AppointmentJoin")
+  appointment_team AppointmentTeams?
+}
+
+model AppointmentTeams {
+  id Int @default(autoincrement()) @id
+  method Int @default(1)
+  appointment_id Int @unique
+  appointment Appointment @relation(fields: [appointment_id], references: [id])
+}
+
+model LogEvents {
+  id Int @default(autoincrement()) @id
+  log Json
+  created_at DateTime @default(now())
+}
+
+enum AppointmentType {
+  Training
+  Match
+  WeeklyMatch
+  Meeting
+  OTHER
+}
+
+enum Role {
+  Player
+  Admin
+  Superuser
+}
+
+
+enum Marjor {
+  IT
+  DSBA
+  BIT
+  AIT
+  OTHER
+}
+
+enum Status {
+  Playing
+  Retired
+  Disappeared
+  Unknown
+}
