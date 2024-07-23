@@ -12,7 +12,7 @@ export class UsersController {
 
   @Post()
   async create(@Body() createUserDto: Prisma.UserCreateInput) {
-    const salt = await genSalt(15);
+    const salt = await genSalt(5);
     const hashed_password = await hash(createUserDto.passwored, salt)
     createUserDto.passwored = hashed_password
     return this.usersService.create(createUserDto);
@@ -33,8 +33,8 @@ export class UsersController {
   //   return this.usersService.update(+id, updateUserDto);
   // }
 
-  // @Delete(':id')
-  // remove(@Param('id') id: string) {
-  //   return this.usersService.remove(+id);
-  // }
+  @Delete(':id')
+  remove(@Param('id') id: string) {
+    return this.usersService.remove(+id);
+  }
 }

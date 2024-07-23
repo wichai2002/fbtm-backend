@@ -14,13 +14,15 @@ export class UsersService {
   }
 
   findAll() {
-    return this.databaseService.user.findMany({});
+    return this.databaseService.user.findMany({
+      where: {is_active: true}
+    });
   }
 
   findOne(id: number) {
     return this.databaseService.user.findUnique(
       {
-        where: {id,},
+        where: {id, is_active:true},
         include: {
           appointment: true
         }
@@ -28,11 +30,11 @@ export class UsersService {
     );
   }
 
-  update(id: number, updateUserDto: Prisma.UserUpdateInput) {
+  update(id: number, updateUserDto: UpdateUserDto) {
     return `This action updates a #${id} user`;
   }
 
-  // remove(id: number) {
-  //   return `This action removes a #${id} user`;
-  // }
+  remove(id: number) {
+    return `This action removes a #${id} user`;
+  }
 }
